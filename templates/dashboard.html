@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TurnosPro - Dashboard de Planificación</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f8fafc;
+            color: #334155;
+        }
+
+        /* Header */
+        .header {
+            background: #10b981;
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .logo {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 1.4rem;
+            color: white;
+            font-weight: normal;
+        }
+
+        .menu-icon {
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: rgba(255,255,255,0.2);
+            padding: 0.4rem 1rem;
+            border-radius: 4px;
+            gap: 0.5rem;
+        }
+
+        .search-bar input {
+            background: none;
+            border: none;
+            color: white;
+            outline: none;
+            width: 150px;
+        }
+
+        .search-bar input::placeholder {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .header-icon {
+            color: white;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #8b5cf6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .user-info {
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .user-name {
+            font-weight: 600;
+        }
+
+        .user-role {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        /* Sidebar */
+        .layout {
+            display: flex;
+            height: calc(100vh - 56px);
+        }
+
+        .sidebar {
+            width: 250px;
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            overflow-y: auto;
+            padding: 1.5rem 0;
+        }
+
+        .sidebar-section {
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-title {
+            padding: 0 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.8rem;
+        }
+
+        .sidebar-item {
+            padding: 0.7rem 1.5rem;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .sidebar-item:hover {
+            background: #f1f5f9;
+            color: #10b981;
+        }
+
+        .sidebar-item.active {
+            background: #10b981;
+            color: white;
+            font-weight: 600;
+            border-left: 3px solid #059669;
+        }
+
+        .sidebar-item i {
+            width: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title-section h1 {
+            font-size: 1.8rem;
+            color: #1e293b;
+            margin-bottom: 0.3rem;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .page-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .btn-secondary {
+            background: #1e293b;
+            color: white;
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .card-options {
+            padding: 0.4rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+        }
+
+        /* Chart Area */
+        .chart-container {
+            margin: 1.5rem 0;
+        }
+
+        .chart-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .chart-label {
+            width: 30px;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .chart-bar-visual {
+            flex: 1;
+            height: 24px;
+            display: flex;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .bar-segment {
+            height: 100%;
+        }
+
+        .bar-blue { background: #3b82f6; }
+        .bar-green { background: #10b981; }
+        .bar-yellow { background: #f59e0b; }
+        .bar-red { background: #ef4444; }
+        .bar-purple { background: #8b5cf6; }
+
+        .chart-legend {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+        /* Stats Cards */
+        .stats-card {
+            padding: 1.2rem;
+            border-radius: 8px;
+            background: white;
+            border: 1px solid #e2e8f0;
+        }
+
+        .stats-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-label {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .stats-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        .stats-target {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 0.3rem;
+        }
+
+        .stats-bar {
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 2px;
+            margin-top: 0.8rem;
+            overflow: hidden;
+        }
+
+        .stats-bar-fill {
+            height: 100%;
+            background: #10b981;
+            border-radius: 2px;
+        }
+
+        /* Highlights */
+        .highlights-section {
+            margin-top: 1rem;
+        }
+
+        .highlight-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .highlight-item:last-child {
+            border-bottom: none;
+        }
+
+        .highlight-user {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .highlight-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e2e8f0;
+        }
+
+        .highlight-info h4 {
+            font-size: 0.95rem;
+            color: #1e293b;
+            margin-bottom: 0.2rem;
+        }
+
+        .highlight-badge {
+            display: inline-block;
+            background: #dbeafe;
+            color: #2563eb;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .highlight-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #10b981;
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            text-align: left;
+            padding: 1rem;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        tbody td {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-complete { background: #d1fae5; color: #065f46; }
+        .status-progress { background: #fee2e2; color: #991b1b; }
+
+        .table-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #e2e8f0;
+        }
+
+        .table-user {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .table-user-info h5 {
+            font-size: 0.9rem;
+            color: #1e293b;
+        }
+
+        .table-user-info p {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        /* Chart */
+        .monthly-chart {
+            height: 150px;
+            background: linear-gradient(180deg, rgba(245, 158, 11, 0.1) 0%, transparent 100%);
+            border-radius: 8px;
+            margin-top: 1rem;
+            position: relative;
+        }
+
+        .chart-line {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100"><path d="M0,50 Q50,20 75,30 T150,40 T225,25 T300,35" fill="none" stroke="%23f59e0b" stroke-width="3"/></svg>');
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+        }
+
+        .percentage-label {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        .percentage-text {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-top: 0.3rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">TurnosPro</div>
+            <div class="menu-icon">☰</div>
+            <div class="search-bar">
+                <span>🔍</span>
+                <input type="text" placeholder="Buscar...">
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <span style="color: white; cursor: pointer;">⚙️ Configuración</span>
+                <span style="color: white; cursor: pointer;">🏢 Proyectos</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <span class="header-icon">📱</span>
+            <span class="header-icon">🔔</span>
+            <span class="header-icon">🇩🇪</span>
+            <span class="header-icon">☀️</span>
+            <div class="user-profile">
+                <div class="user-avatar">AM</div>
+                <div class="user-info">
+                    <div class="user-name">Alina Mclourd</div>
+                    <div class="user-role">HR Manager</div>
+                </div>
+            </div>
+            <span class="header-icon">⋮</span>
+        </div>
+    </header>
+
+    <div class="layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">MENÚ</div>
+                <div class="sidebar-item">📊 Dashboards</div>
+                <div class="sidebar-item">📈 Analytics</div>
+                <div class="sidebar-item active">🛒 Commerce</div>
+                <div class="sidebar-item">💰 Sales</div>
+                <div class="sidebar-item">📧 Micheel</div>
+                <div class="sidebar-item">📄 CRM</div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">PAGES</div>
+                <div class="sidebar-item">📱 Applications</div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">UI COMPONENTS</div>
+                <div class="sidebar-item">🧩 Elements</div>
+                <div class="sidebar-item">📦 Components</div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">DASHBOARD WIDGETS</div>
+                <div class="sidebar-item">📊 Chart Boxes 1</div>
+                <div class="sidebar-item">📊 Chart Boxes 2</div>
+                <div class="sidebar-item">📊 Chart Boxes 3</div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">FORMS</div>
+                <div class="sidebar-item">📝 Elements</div>
+                <div class="sidebar-item">🧮 Widgets</div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">CHARTS</div>
+                <div class="sidebar-item">📈 ChartJS</div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <div class="page-title-section">
+                    <h1>Sistema de Planificación de Turnos</h1>
+                    <p class="page-subtitle">Dashboard creado para optimizar la asignación de turnos en puntos de venta</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-secondary">⭐</button>
+                    <button class="btn btn-primary" onclick="generateSchedule()">🔄 Generar Planificación</button>
+                </div>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div class="dashboard-grid">
+                <!-- Income Report -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Reporte de Asignación de Turnos</h3>
+                        <select class="card-options">
+                            <option>Opciones</option>
+                        </select>
+                    </div>
+
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <div class="legend-color bar-blue"></div>
+                            <span>Apertura</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color bar-green"></div>
+                            <span>Cierre</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color bar-yellow"></div>
+                            <span>Intermedio</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color bar-red"></div>
+                            <span>Festivos</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color bar-purple"></div>
+                            <span>Especiales</span>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-bar">
+                            <div class="chart-label">1</div>
+                            <div class="chart-bar-visual">
+                                <div class="bar-segment bar-blue" style="width: 35%"></div>
+                                <div class="bar-segment bar-green" style="width: 25%"></div>
+                                <div class="bar-segment bar-yellow" style="width: 20%"></div>
+                                <div class="bar-segment bar-red" style="width: 10%"></div>
+                                <div class="bar-segment bar-purple" style="width: 10%"></div>
+                            </div>
+                        </div>
+                        <div class="chart-bar">
+                            <div class="chart-label">2</div>
+                            <div class="chart-bar-visual">
+                                <div class="bar-segment bar-blue" style="width: 40%"></div>
+                                <div class="bar-segment bar-green" style="width: 30%"></div>
+                                <div class="bar-segment bar-yellow" style="width: 15%"></div>
+                                <div class="bar-segment bar-red" style="width: 8%"></div>
+                                <div class="bar-segment bar-purple" style="width: 7%"></div>
+                            </div>
+                        </div>
+                        <div class="chart-bar">
+                            <div class="chart-label">3</div>
+                            <div class="chart-bar-visual">
+                                <div class="bar-segment bar-blue" style="width: 32%"></div>
+                                <div class="bar-segment bar-green" style="width: 28%"></div>
+                                <div class="bar-segment bar-yellow" style="width: 25%"></div>
+                                <div class="bar-segment bar-red" style="width: 10%"></div>
+                                <div class="bar-segment bar-purple" style="width: 5%"></div>
+                            </div>
+                        </div>
+                        <div class="chart-bar">
+                            <div class="chart-label">4</div>
+                            <div class="chart-bar-visual">
+                                <div class="bar-segment bar-blue" style="width: 45%"></div>
+                                <div class="bar-segment bar-green" style="width: 20%"></div>
+                                <div class="bar-segment bar-yellow" style="width: 18%"></div>
+                                <div class="bar-segment bar-red" style="width: 12%"></div>
+                                <div class="bar-segment bar-purple" style="width: 5%"></div>
+                            </div>
+                        </div>
+                        <div class="chart-bar">
+                            <div class="chart-label">5</div>
+                            <div class="chart-bar-visual">
+                                <div class="bar-segment bar-blue" style="width: 38%"></div>
+                                <div class="bar-segment bar-green" style="width: 32%"></div>
+                                <div class="bar-segment bar-yellow" style="width: 15%"></div>
+                                <div class="bar-segment bar-red" style="width: 10%"></div>
+                                <div class="bar-segment bar-purple" style="width: 5%"></div>
+                            </div>
+                        </div>
+                        <div class="chart-bar">
+                            <div class="chart-label">6</div>
+                            <div class="chart-bar-visual">
+                                <div class="bar-segment bar-blue" style="width: 42%"></div>
+                                <div class="bar-segment bar-green" style="width: 28%"></div>
+                                <div class="bar-segment bar-yellow" style="width: 20%"></div>
+                                <div class="bar-segment bar-red" style="width: 7%"></div>
+                                <div class="bar-segment bar-purple" style="width: 3%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem;">
+                        <div class="stats-card">
+                            <div class="stats-header">
+                                <span class="stats-label">Turnos Asignados</span>
+                                <span style="color: #10b981;">100%</span>
+                            </div>
+                            <div class="stats-value">366</div>
+                            <div class="stats-target">Meta Mensual</div>
+                            <div class="stats-bar">
+                                <div class="stats-bar-fill" style="width: 100%"></div>
+                            </div>
+                        </div>
+
+                        <div class="stats-card">
+                            <div class="stats-header">
+                                <span class="stats-label">Eficiencia</span>
+                                <span style="color: #10b981;">100%</span>
+                            </div>
+                            <div class="stats-value" style="color: #10b981;">$2797</div>
+                            <div class="stats-target">Optimización Total</div>
+                            <div class="stats-bar">
+                                <div class="stats-bar-fill" style="width: 100%; background: #10b981;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Highlights -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">HIGHLIGHTS</h3>
+                    </div>
+
+                    <div class="highlights-section">
+                        <div class="highlight-item">
+                            <div class="highlight-user">
+                                <div class="highlight-avatar" style="background: #3b82f6;"></div>
+                                <div class="highlight-info">
+                                    <h4>Bruk Collier</h4>
+                                    <span class="highlight-badge">SALES</span>
+                                </div>
+                            </div>
+                            <div class="highlight-value">750 ↗</div>
+                        </div>
+
+                        <div class="highlight-item">
+                            <div class="highlight-user">
+                                <div class="highlight-avatar" style="background: #8b5cf6;"></div>
+                                <div class="highlight-info">
+                                    <h4>Angelo Hume</h4>
+                                    <span class="highlight-badge" style="background: #ddd6fe; color: #6d28d9;">SALES</span>
+                                </div>
+                            </div>
+                            <div class="highlight-value">642 ↗</div>
+                        </div>
+
+                        <div class="highlight-item">
+                            <div class="highlight-user">
+                                <div class="highlight-avatar" style="background: #ec4899;"></div>
+                                <div class="highlight-info">
+                                    <h4>James Melendez</h4>
+                                    <span class="highlight-badge" style="background: #fce7f3; color: #be185d;">SALES</span>
+                                </div>
+                            </div>
+                            <div class="highlight-value">874 ↗</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 2rem;">
+                        <h3 class="card-title">Monthly Statistics</h3>
+                        <div class="monthly-chart">
+                            <div class="percentage-label">
+                                76
+                                <div class="percentage-text">Revenue Increased this Quarter</div>
+                            </div>
+                            <div class="chart-line"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Planificación de Asesores</h3>
+                    <div style="display: flex; gap: 1rem;">
+                        <button class="btn" style="background: #1e293b; color: white;">Last Week</button>
+                        <button class="btn" style="background: #e2e8f0; color: #1e293b;">All Month</button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Status</th>
+                                <th>Asesor</th>
+                                <th>Progreso</th>
+                                <th>Turnos</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#345</td>
+                                <td><span class="status-badge status-pending">PENDING</span></td>
+                                <td>
+                                    <div class="table-user">
+                                        <div class="table-avatar" style="background: #3b82f6;"></div>
+                                        <div class="table-user-info">
+                                            <h5>John Doe</h5>
+                                            <p>Web Developer</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="width: 100px; height: 4px; background: #e2e8f0; border-radius: 2px;">
+                                        <div style="width: 60%; height: 100%; background: #10b981; border-radius: 2px;"></div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <svg width="60" height="30" style="display: block;">
+                                        <polyline points="0,15 15,8 30,12 45,5 60,10" fill="none" stroke="#10b981" stroke-width="2"/>
+                                    </svg>
+                                </td>
+                                <td>⋮</td>
+                            </tr>
+                            <tr>
+                                <td>#347</td>
+                                <td><span class="status-badge status-complete">COMPLETE</span></td>
+                                <td>
+                                    <div class="table-user">
+                                        <div class="table-avatar" style="background: #8b5cf6;"></div>
+                                        <div class="table-user-info">
+                                            <h5>Ruben Tillman</h5>
+                                            <p>Etiam sit amet orci eget</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="width: 100px; height: 4px; background: #e2e8f0; border-radius: 2px;">
+                                        <div style="width: 40%; height: 100%; background: #ec4899; border-radius: 2px;"></div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <svg width="60" height="30" style="display: block;">
+                                        <rect x="0" y="20" width="8" height="10" fill="#3b82f6"/>
+                                        <rect x="12" y="15" width="8" height="15" fill="#3b82f6"/>
+                                        <rect x="24" y="10" width="8" height="20" fill="#3b82f6"/>
+                                        <rect x="36" y="18" width="8" height="12" fill="#3b82f6"/>
+                                        <rect x="48" y="12" width="8" height="18" fill="#3b82f6"/>
+                                    </svg>
+                                </td>
+                                <td>⋮</td>
+                            </tr>
+                            <tr>
+                                <td>#321</td>
+                                <td><span class="status-badge status-progress">IN PROGRESS</span></td>
+                                <td>
+                                    <div class="table-user">
+                                        <div class="table-avatar" style="background: #ec4899;"></div>
+                                        <div class="table-user-info">
+                                            <h5>Elliot Huber</h5>
+                                            <p>Lorem ipsum dolor sit</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="width: 100px; height: 4px; background: #e2e8f0; border-radius: 2px;">
+                                        <div style="width: 75%; height: 100%; background: #f59e0b; border-radius: 2px;"></div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <svg width="60" height="30" style="display: block;">
+                                        <rect x="0" y="22" width="8" height="8" fill="#3b82f6"/>
+                                        <rect x="12" y="18" width="8" height="12" fill="#3b82f6"/>
+                                        <rect x="24" y="14" width="8" height="16" fill="#3b82f6"/>
+                                        <rect x="36" y="20" width="8" height="10" fill="#3b82f6"/>
+                                        <rect x="48" y="16" width="8" height="14" fill="#3b82f6"/>
+                                    </svg>
+                                </td>
+                                <td>⋮</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        function generateSchedule() {
+            alert('🎯 Sistema de Planificación de Turnos\n\n✅ Generando planificación óptima...\n✅ Aplicando algoritmo CP-SAT\n✅ Validando restricciones\n✅ Asignando turnos equitativamente\n\nEn la implementación real con Flask y Python, esto ejecutará el modelo de optimización y mostrará los resultados en la tabla.');
+        }
+
+        // Smooth animations
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

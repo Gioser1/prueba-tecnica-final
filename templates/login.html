@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body{ display:flex; justify-content:center; align-items:center; height:100vh; background:#f4f6f8; font-family:Arial, sans-serif; }
+        .form-container{ width:350px; background:#fff; box-shadow:rgba(0,0,0,0.15) 0 4px 12px; border-radius:10px; padding:20px; }
+        .title{ text-align:center; font-size:24px; font-weight:700; margin-bottom:18px; }
+        .input{ width:100%; padding:10px 12px; border-radius:8px; border:1px solid #ccc; font-size:14px; }
+        .form-btn{ width:100%; padding:10px; border:none; border-radius:8px; background:teal; color:#fff; font-weight:700; margin-top:12px; cursor:pointer; }
+        .error{ color:#b00020; text-align:center; margin-top:8px; }
+        .debug{ margin:8px 0; font-size:13px; color:#555; background:#f0f0f0; padding:8px; border-radius:6px; }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <div class="title">Welcome back</div>
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <div class="debug">
+        <strong>Credenciales de prueba:</strong><br>
+        juan@gmail.com / 1234<br>
+        maria@gmail.com / 1234<br>
+        sergio@gmail.com / 1234
+    </div>
+
+    <form action="{{ url_for('inicio.login_verify') }}" method="POST">
+        <input class="input" type="email" name="correo" placeholder="Email" required>
+        <input class="input" type="password" name="contraseña" placeholder="Password" required minlength="4" style="margin-top:8px;">
+        <button class="form-btn" type="submit">Log in</button>
+    </form>
+</div>
+</body>
+</html>

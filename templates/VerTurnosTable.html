@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TurnosPro - Planificación Mensual</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f8fafc;
+            color: #334155;
+        }
+
+        /* Header */
+        .header {
+            background: #10b981;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            color: white;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: white;
+            background: rgba(255,255,255,0.15);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            color: white;
+        }
+
+        .user-info {
+            font-size: 0.9rem;
+        }
+
+        .user-name {
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2.5rem 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+        }
+
+        /* Time Tracking Card */
+        .time-tracking-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .time-tracking-card h2 {
+            font-size: 1.3rem;
+            color: #1e293b;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .time-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .time-info-item {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .time-info-label {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 0.3rem;
+        }
+
+        .time-info-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .time-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.9rem 1.8rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        /* Summary Cards */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .summary-card h3 {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 0.8rem;
+            font-weight: 500;
+        }
+
+        .summary-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        /* Table Container */
+        .table-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .table-header h2 {
+            font-size: 1.3rem;
+            color: #1e293b;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            padding: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            text-align: left;
+            padding: 1rem;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border-bottom: 2px solid #e2e8f0;
+            background: #f8fafc;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f1f5f9;
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        tbody td {
+            padding: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .asesor-cell {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .semana-badge {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .turno-badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .turno-apertura {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .turno-cierre {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .turno-intermedio {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: #64748b;
+            margin-bottom: 2rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .main-content {
+                padding: 1.5rem 1rem;
+            }
+
+            .table-container {
+                padding: 1rem;
+            }
+
+            .time-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">TurnosPro</div>
+            <nav class="nav-links">
+                <a href="{{ url_for('Dashboard.dashboard_page') }}" class="nav-link">Dashboard</a>
+                <a href="{{ url_for('Dashboard.ver_turnos_table', temp_id=temp_id) }}" class="nav-link active">Ver Turnos</a>
+                <a href="{{ url_for('inicio.perfil', temp_id=temp_id) }}" class="nav-link">Perfil</a>
+            </nav>
+        </div>
+        <div class="header-right">
+            <div class="user-info">
+                <div class="user-name">{{ usuario.nombre }}</div>
+                <div style="font-size: 0.8rem; opacity: 0.9;">{{ usuario.get('rol', 'Asesor') }}</div>
+            </div>
+            <a href="{{ url_for('inicio.logout') }}" style="color: white; text-decoration: none;">🚪</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1>Sistema de Planificación de Turnos</h1>
+            <p class="page-subtitle">Gestiona tu jornada laboral y consulta la planificación mensual</p>
+        </div>
+
+        <!-- Time Tracking Card -->
+        <div class="time-tracking-card">
+            <h2>⏰ Control de Jornada Laboral</h2>
+            
+            {% if mensaje %}
+            <div class="alert {% if error %}alert-error{% else %}alert-success{% endif %}">
+                {{ mensaje }}
+            </div>
+            {% endif %}
+
+            <div class="time-info">
+                <div class="time-info-item">
+                    <div class="time-info-label">Hora de Inicio</div>
+                    <div class="time-info-value">{{ usuario.get('hora_inicio_str', '--:--:--') }}</div>
+                </div>
+                <div class="time-info-item">
+                    <div class="time-info-label">Hora de Fin</div>
+                    <div class="time-info-value">{{ usuario.get('hora_fin_str', '--:--:--') }}</div>
+                </div>
+                <div class="time-info-item">
+                    <div class="time-info-label">Total Trabajado</div>
+                    <div class="time-info-value">{{ usuario.get('horas_trabajadas', 0) }} h</div>
+                </div>
+            </div>
+
+            <div class="time-buttons">
+                <!-- Registrar Hora de Inicio -->
+                <form action="{{ url_for('Dashboard.hora_inicio_trabajo') }}" method="POST" style="display: inline;">
+                    <input type="hidden" name="temp_id" value="{{ temp_id }}">
+                    <input type="hidden" name="user_id" value="{{ user_id }}">
+                    <button type="submit" class="btn btn-primary" {% if usuario.get('hora_inicio') %}disabled{% endif %}>
+                        ▶️ Registrar Hora de Inicio
+                    </button>
+                </form>
+
+                <!-- Registrar Hora de Fin -->
+                <form action="{{ url_for('Dashboard.hora_fin_trabajo') }}" method="POST" style="display: inline;">
+                    <input type="hidden" name="temp_id" value="{{ temp_id }}">
+                    <input type="hidden" name="user_id" value="{{ user_id }}">
+                    <button type="submit" class="btn btn-danger" {% if not usuario.get('hora_inicio') or usuario.get('hora_fin') %}disabled{% endif %}>
+                        ⏹️ Registrar Hora de Fin
+                    </button>
+                </form>
+
+                <!-- Reiniciar Jornada -->
+                <form action="{{ url_for('Dashboard.reiniciar_jornada') }}" method="POST" style="display: inline;">
+                    <input type="hidden" name="temp_id" value="{{ temp_id }}">
+                    <input type="hidden" name="user_id" value="{{ user_id }}">
+                    <button type="submit" class="btn btn-secondary">
+                        🔄 Reiniciar Jornada
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="summary-grid" id="summaryGrid"></div>
+
+        <!-- Table -->
+        <div class="table-card">
+            <div class="table-header">
+                <h2>📅 Planificación Mensual de Turnos</h2>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" onclick="filterBySemana('all')">Todas</button>
+                    <button class="filter-btn" onclick="filterBySemana(1)">Semana 1</button>
+                    <button class="filter-btn" onclick="filterBySemana(2)">Semana 2</button>
+                    <button class="filter-btn" onclick="filterBySemana(3)">Semana 3</button>
+                    <button class="filter-btn" onclick="filterBySemana(4)">Semana 4</button>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <div id="tableContent"></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let planData = [];
+        let currentFilter = 'all';
+
+        // Cargar datos al iniciar
+        window.addEventListener('DOMContentLoaded', () => {
+            loadPlanData();
+        });
+
+        function loadPlanData() {
+            // Intentar cargar desde sessionStorage
+            const stored = sessionStorage.getItem('planData');
+            
+            if (stored) {
+                planData = JSON.parse(stored);
+                renderSummary();
+                renderTable();
+            } else {
+                // Si no hay datos, intentar cargar desde API
+                fetchPlanFromAPI();
+            }
+        }
+
+        async function fetchPlanFromAPI() {
+            try {
+                const response = await fetch('/plan?weeks=4&rotation=true&time_limit=10');
+                const data = await response.json();
+                
+                if (data.status === 'ok' && data.plan) {
+                    planData = data.plan;
+                    sessionStorage.setItem('planData', JSON.stringify(planData));
+                    renderSummary();
+                    renderTable();
+                } else {
+                    showEmptyState();
+                }
+            } catch (error) {
+                console.error('Error loading plan:', error);
+                showEmptyState();
+            }
+        }
+
+        function renderSummary() {
+            const summaryGrid = document.getElementById('summaryGrid');
+            
+            if (planData.length === 0) {
+                summaryGrid.innerHTML = '';
+                return;
+            }
+
+            const asesores = [...new Set(planData.map(item => item.Asesor))];
+            const semanas = [...new Set(planData.map(item => item.Semana))];
+            const totalTurnos = planData.length;
+
+            summaryGrid.innerHTML = `
+                <div class="summary-card">
+                    <h3>Total de Asesores</h3>
+                    <div class="summary-value">${asesores.length}</div>
+                </div>
+                <div class="summary-card">
+                    <h3>Semanas Planificadas</h3>
+                    <div class="summary-value">${semanas.length}</div>
+                </div>
+                <div class="summary-card">
+                    <h3>Total de Asignaciones</h3>
+                    <div class="summary-value">${totalTurnos}</div>
+                </div>
+                <div class="summary-card">
+                    <h3>Estado</h3>
+                    <div class="summary-value" style="color: #10b981; font-size: 1.5rem;">✓ Activo</div>
+                </div>
+            `;
+        }
+
+        function renderTable() {
+            const tableContent = document.getElementById('tableContent');
+            
+            if (planData.length === 0) {
+                showEmptyState();
+                return;
+            }
+
+            let filteredData = planData;
+            if (currentFilter !== 'all') {
+                filteredData = planData.filter(item => item.Semana === currentFilter);
+            }
+
+            let tableHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Asesor</th>
+                            <th>Semana</th>
+                            <th>Día</th>
+                            <th>Turno Asignado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            filteredData.forEach(item => {
+                const turnoClass = item.Turno.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                tableHTML += `
+                    <tr>
+                        <td class="asesor-cell">${item.Asesor}</td>
+                        <td><span class="semana-badge">Semana ${item.Semana}</span></td>
+                        <td>${item.Día}</td>
+                        <td><span class="turno-badge turno-${turnoClass}">${item.Turno}</span></td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += '</tbody></table>';
+            tableContent.innerHTML = tableHTML;
+        }
+
+        function showEmptyState() {
+            const tableContent = document.getElementById('tableContent');
+            tableContent.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">📋</div>
+                    <h3>No hay planificación disponible</h3>
+                    <p>Genera una nueva planificación desde el Dashboard</p>
+                    <a href="{{ url_for('Dashboard.dashboard_page') }}" class="btn btn-primary">Ir al Dashboard</a>
+                </div>
+            `;
+        }
+
+        function filterBySemana(semana) {
+            currentFilter = semana;
+            
+            // Actualizar botones activos
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            renderTable();
+        }
+    </script>
+</body>
+</html>

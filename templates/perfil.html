@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Perfil de Usuario</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        *{box-sizing:border-box}
+        body{ margin:0; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; background:linear-gradient(135deg,#1e3c72,#2a5298); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;}
+        .profile-card{ background:#fff; width:380px; border-radius:14px; padding:30px; box-shadow:0 20px 40px rgba(0,0,0,0.25); }
+        h1{text-align:center; margin:0 0 8px; font-size:22px;}
+        .role{ text-align:center; font-size:13px; color:#777; margin-bottom:18px; }
+        .info-row{ display:flex; justify-content:space-between; margin:10px 0; font-size:14px; }
+        .actions form{ margin-top:12px; }
+        .actions button{ width:100%; padding:12px; border-radius:8px; border:none; font-weight:600; cursor:pointer; margin-top:6px; }
+        .btn-start{ background:#28a745; color:#fff; }
+        .btn-end{ background:#dc3545; color:#fff; }
+        .message{ margin-top:12px; text-align:center; font-weight:700; }
+        .success{ color:#28a745; } .error{ color:#c82333; }
+        .small{ font-size:12px; color:#666; text-align:center; margin-top:6px; }
+    </style>
+</head>
+<body>
+<div class="profile-card">
+    <h1>{{ usuario.nombre }}</h1>
+    <div class="role">{{ usuario.rol | upper }}</div>
+
+    <div class="info-row"><div>Hora inicio:</div><div>{{ usuario.hora_inicio.strftime("%H:%M:%S") if usuario.hora_inicio else "-" }}</div></div>
+    <div class="info-row"><div>Hora fin:</div><div>{{ usuario.hora_fin.strftime("%H:%M:%S") if usuario.hora_fin else "-" }}</div></div>
+    <div class="info-row"><div>Horas trabajadas:</div><div>{{ usuario.horas_trabajadas }}</div></div>
+
+    <div class="actions">
+        <form action="{{ url_for('Dashboard.hora_inicio_trabajo') }}" method="POST">
+            <input type="hidden" name="temp_id" value="{{ temp_id }}">
+            <input type="hidden" name="user_id" value="{{ user_id }}">
+            <button class="btn-start" type="submit">Registrar hora de inicio</button>
+        </form>
+
+        <form action="{{ url_for('Dashboard.hora_fin_trabajo') }}" method="POST">
+            <input type="hidden" name="temp_id" value="{{ temp_id }}">
+            <input type="hidden" name="user_id" value="{{ user_id }}">
+            <button class="btn-end" type="submit">Registrar hora de fin</button>
+        </form>
+    </div>
+
+    {% if mensaje %}
+        <div class="message {{ 'error' if error else 'success' }}">{{ mensaje }}</div>
+    {% endif %}
+
+    <div class="small">
+        <a href="{{ url_for('inicio.logout', temp_id=temp_id) }}">Cerrar sesión</a>
+    </div>
+</div>
+</body>
+</html>
